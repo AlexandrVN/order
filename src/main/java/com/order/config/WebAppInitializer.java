@@ -6,17 +6,20 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
+import javax.servlet.ServletRegistration.Dynamic;
 
 public class WebAppInitializer implements WebApplicationInitializer {
+
+    private static final String DISPATCHER_SERVLET_NAME = "dispatcher";
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+        context.register(SpringConfig.class);
         context.register(WebConfig.class);
         context.setServletContext(servletContext);
 
-        ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", new DispatcherServlet(context));
+        Dynamic dispatcher = servletContext.addServlet(DISPATCHER_SERVLET_NAME, new DispatcherServlet(context));
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
     }
